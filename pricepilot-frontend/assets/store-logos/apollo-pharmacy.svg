@@ -1,0 +1,6 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Apollo Pharmacy logo">
+  <rect width="120" height="120" rx="60" fill="#008c95"/>
+  <circle cx="60" cy="60" r="48" fill="#ffffff"/>
+  <path d="M60 30L67 52H90L71 65L78 88L60 74L42 88L49 65L30 52H53L60 30Z" fill="#ff8a00"/>
+  <text x="60" y="101" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="800" fill="#008c95">APOLLO</text>
+</svg>

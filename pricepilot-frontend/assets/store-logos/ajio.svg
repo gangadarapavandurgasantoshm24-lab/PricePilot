@@ -1,0 +1,6 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ajio logo">
+  <rect width="120" height="120" rx="60" fill="#17213f"/>
+  <circle cx="60" cy="60" r="48" fill="#ffffff"/>
+  <text x="60" y="67" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="800" fill="#17213f">AJIO</text>
+  <path d="M31 78H89" stroke="#d5a14b" stroke-width="5" stroke-linecap="round"/>
+</svg>

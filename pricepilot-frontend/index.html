@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PricePilot - AI Price Comparison</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="site-shell">
+    <section class="hero-section" id="login">
+      <div class="sky-gradient"></div>
+      <div class="cloud cloud-a"></div>
+      <div class="cloud cloud-b"></div>
+      <div class="cloud cloud-c"></div>
+      <div class="particle-field" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+
+      <header class="top-nav">
+        <a class="brand" href="index.html" aria-label="PricePilot home">
+          <img class="brand-mark" src="images/logo.png" alt="" aria-hidden="true">
+          <span>Price<span>Pilot</span></span>
+        </a>
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a href="#stores">Stores</a>
+          <a href="#dashboard">Dashboard</a>
+          <a href="#compare">Compare</a>
+        </nav>
+        <a class="nav-cta" href="#login">Sign in</a>
+      </header>
+
+      <div class="hero-grid">
+        <div class="hero-copy reveal">
+          <p class="eyebrow">AI-powered marketplace intelligence</p>
+          <h1>Find the best price before you buy.</h1>
+          <p class="hero-text">Compare top marketplaces instantly with one smart search.</p>
+        </div>
+
+        <form class="login-card reveal" action="#dashboard" id="loginForm">
+          <a class="login-logo" href="index.html" aria-label="PricePilot">
+            <img class="brand-mark" src="images/logo.png" alt="" aria-hidden="true">
+            <span>PricePilot</span>
+          </a>
+          <div class="login-title">
+            <h2>Welcome Back</h2>
+            <p>Compare prices across all major stores instantly.</p>
+          </div>
+          <label class="field">
+            <span>Email</span>
+            <input type="email" placeholder="Gmail / Email Address" autocomplete="email">
+          </label>
+          <label class="field">
+            <span>Password</span>
+            <input type="password" placeholder="Password" autocomplete="current-password">
+          </label>
+          <div class="login-meta">
+            <a href="#login">Forgot Password</a>
+          </div>
+          <button class="login-btn" type="submit">Login</button>
+          <div class="divider"><span>or continue with</span></div>
+          <div class="social-row">
+            <button type="button"><span class="google-dot"></span>Google</button>
+            <button type="button"><span class="apple-dot"></span>Apple</button>
+          </div>
+          <p class="signup-copy">New to PricePilot? <a href="#login">Create Account</a></p>
+        </form>
+      </div>
+    </section>
+
+    <section class="dashboard-section" id="dashboard">
+      <header class="app-header">
+        <a class="brand dark" href="index.html">
+          <img class="brand-mark" src="images/logo.png" alt="" aria-hidden="true">
+          <span>Price<span>Pilot</span></span>
+        </a>
+        <div class="header-actions">
+          <button aria-label="Notifications"><img src="images/bell.png" alt=""></button>
+          <button aria-label="Profile"><img src="images/sp.png" alt=""></button>
+        </div>
+      </header>
+
+      <div class="dashboard-hero reveal">
+        <p class="eyebrow">Home dashboard</p>
+        <h2>Search every major store from one intelligent command center.</h2>
+        <form class="smart-search" action="#compare" id="searchForm">
+          <input type="search" placeholder="Search any product across all stores..." aria-label="Search any product across all stores" id="searchInput">
+          <button type="button" aria-label="Voice search"><img src="images/mic.png" alt=""></button>
+          <button type="button" aria-label="Image search"><img src="images/gallary.png" alt=""></button>
+          <button type="submit">Search</button>
+        </form>
+      </div>
+
+      <section class="store-section reveal" id="stores">
+        <div class="section-heading">
+          <p class="eyebrow">Live store integration</p>
+          <h2>Search once. See the real payable price everywhere.</h2>
+        </div>
+        <p class="result-status" id="resultStatus">Showing live sample results from the PricePilot backend.</p>
+        <div class="store-carousel" aria-label="Scrollable product cards" id="productResults">
+          <article class="product-card">
+            <span class="store-logo"><img src="assets/store-logos/amazon.svg" alt="Amazon logo"></span>
+            <img src="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=500&q=80" alt="Smartphone">
+            <h3>iPhone 16 Pro 128GB</h3>
+            <div class="card-meta"><strong>Rs. 1,18,900</strong><span>12% off</span></div>
+            <div class="price-breakdown">
+              <span>GST included</span>
+              <span>Best offer selected: HDFC card + coupon</span>
+            </div>
+            <p class="final-price"><span>Final payable</span> Rs. 1,09,900</p>
+          </article>
+          <article class="product-card">
+            <span class="store-logo"><img src="assets/store-logos/flipkart.svg" alt="Flipkart logo"></span>
+            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=500&q=80" alt="Sneakers">
+            <h3>Nike Air Zoom Pegasus</h3>
+            <div class="card-meta"><strong>Rs. 7,299</strong><span>28% off</span></div>
+            <div class="price-breakdown">
+              <span>GST included</span>
+              <span>Best offer selected: Axis card + SuperCoins</span>
+            </div>
+            <p class="final-price"><span>Final payable</span> Rs. 6,549</p>
+          </article>
+          <article class="product-card">
+            <span class="store-logo"><img src="assets/store-logos/nykaa.svg" alt="Nykaa logo"></span>
+            <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=500&q=80" alt="Cosmetics kit">
+            <h3>Glow Essentials Beauty Kit</h3>
+            <div class="card-meta"><strong>Rs. 1,749</strong><span>34% off</span></div>
+            <div class="price-breakdown">
+              <span>GST included</span>
+              <span>Best offer selected: Beauty coupon + UPI cashback</span>
+            </div>
+            <p class="final-price"><span>Final payable</span> Rs. 1,474</p>
+          </article>
+          <article class="product-card">
+            <span class="store-logo"><img src="assets/store-logos/myntra.svg" alt="Myntra logo"></span>
+            <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=500&q=80" alt="Fashion outfit">
+            <h3>Premium Summer Dress</h3>
+            <div class="card-meta"><strong>Rs. 2,199</strong><span>42% off</span></div>
+            <div class="price-breakdown">
+              <span>GST included</span>
+              <span>Best offer selected: Myntra coupon + SBI card</span>
+            </div>
+            <p class="final-price"><span>Final payable</span> Rs. 1,674</p>
+          </article>
+          <article class="product-card">
+            <span class="store-logo"><img src="assets/store-logos/croma.svg" alt="Croma logo"></span>
+            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80" alt="Headphones">
+            <h3>Wireless Noise Cancel Headphones</h3>
+            <div class="card-meta"><strong>Rs. 4,499</strong><span>31% off</span></div>
+            <div class="price-breakdown">
+              <span>GST included</span>
+              <span>Best offer selected: ICICI card + store offer</span>
+            </div>
+            <p class="final-price"><span>Final payable</span> Rs. 3,749</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="comparison-section reveal" id="compare">
+        <div class="section-heading">
+          <p class="eyebrow">Final payable comparison</p>
+          <h2>Best offer selected from all available offers.</h2>
+        </div>
+        <div class="comparison-table" role="table" aria-label="Product price comparison" id="comparisonResults">
+          <div class="comparison-row table-head" role="row">
+            <span>Store</span><span>Listing Price</span><span>Best Offer Selected</span><span>Delivery</span><span>Final Payable</span><span>Buy Now</span>
+          </div>
+          <div class="comparison-row best-deal" role="row">
+            <span class="store-cell"><span class="mini-logo"><img src="assets/store-logos/flipkart.svg" alt="Flipkart logo"></span><span>Flipkart <em>Best final price</em></span></span><strong>Rs. 1,17,999</strong><span>Coupon + bank offer chosen</span><span>Free</span><strong class="payable">Rs. 1,08,999</strong><a href="#compare">Buy Now</a>
+          </div>
+          <div class="comparison-row" role="row">
+            <span class="store-cell"><span class="mini-logo"><img src="assets/store-logos/amazon.svg" alt="Amazon logo"></span><span>Amazon</span></span><strong>Rs. 1,18,900</strong><span>HDFC card + coupon chosen</span><span>Free</span><strong class="payable">Rs. 1,09,900</strong><a href="#compare">Buy Now</a>
+          </div>
+          <div class="comparison-row" role="row">
+            <span class="store-cell"><span class="mini-logo"><img src="assets/store-logos/croma.svg" alt="Croma logo"></span><span>Croma</span></span><strong>Rs. 1,19,500</strong><span>ICICI card + store offer chosen</span><span>Rs. 99</span><strong class="payable">Rs. 1,12,099</strong><a href="#compare">Buy Now</a>
+          </div>
+          <div class="comparison-row" role="row">
+            <span class="store-cell"><span class="mini-logo"><img src="assets/store-logos/myntra.svg" alt="Myntra logo"></span><span>Myntra</span></span><strong>Rs. 1,20,999</strong><span>SBI card + coupon chosen</span><span>Free</span><strong class="payable">Rs. 1,14,499</strong><a href="#compare">Buy Now</a>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

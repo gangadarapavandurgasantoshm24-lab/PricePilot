@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 64" role="img" aria-label="Myntra">
+  <rect width="180" height="64" rx="12" fill="#ffffff"/>
+  <path d="M18 48 31 15l15 25 15-25 12 33" fill="none" stroke="#f15a24" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M32 15 46 40 61 15" fill="none" stroke="#ed1b72" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M61 15 73 48" fill="none" stroke="#faa61a" stroke-width="8" stroke-linecap="round"/>
+  <text x="87" y="39" fill="#243b7a" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="800">Myntra</text>
+</svg>

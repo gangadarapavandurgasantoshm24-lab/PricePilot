@@ -1,0 +1,21 @@
+{
+  "name": "pricepilot-backend",
+  "version": "1.0.0",
+  "description": "Express REST API backend for PricePilot price comparison.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "price-comparison",
+    "express",
+    "rest-api"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  }
+}
