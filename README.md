@@ -12,6 +12,13 @@ experience. It combines prices, GST, shipping charges, bank offers, and coupon
 discounts to show the amount a customer will actually pay—not just the listed
 price.
 
+## Project status
+
+> **Work in progress:** The frontend interface and Express.js backend are
+> complete. The next phases will add live marketplace APIs and scraping, an
+> AI-powered natural-language recommendation layer, price-drop alerts and other
+> advanced features, automated testing, and production deployment.
+
 ## Highlights
 
 - Search products across multiple marketplace categories
