@@ -12,7 +12,7 @@
     "express",
     "rest-api"
   ],
-  "author": "",
+  "author": "Gangadara Pavan Durga Santosh",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
