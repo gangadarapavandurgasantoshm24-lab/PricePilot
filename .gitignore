@@ -1,8 +1,48 @@
+# ─── Dependencies ──────────────────────────────────────────────────────────────
 node_modules/
+.pnp
+.pnp.js
+
+# ─── Environment ───────────────────────────────────────────────────────────────
 .env
 .env.*
 !.env.example
-.agents/
+
+# ─── Playwright browsers (large binaries, downloaded via npx playwright install)
+**/playwright-report/
+**/test-results/
+ms-playwright/
+
+# ─── Build output ──────────────────────────────────────────────────────────────
+dist/
+build/
+.next/
+.nuxt/
+out/
+
+# ─── Logs ──────────────────────────────────────────────────────────────────────
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# ─── OS artifacts ──────────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
-npm-debug.log*
+Desktop.ini
+
+# ─── Editor ────────────────────────────────────────────────────────────────────
+.vscode/settings.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# ─── Test coverage ─────────────────────────────────────────────────────────────
+coverage/
+.nyc_output/
+
+# ─── Antigravity AI IDE internal files ─────────────────────────────────────────
+.agents/

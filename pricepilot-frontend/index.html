@@ -3,75 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PricePilot - AI Price Comparison</title>
+  <title>PricePilot – AI Price Comparison | Find the Best Final Payable Price</title>
+  <meta name="description" content="PricePilot compares prices across Amazon, Flipkart, Nykaa, Croma and more. See the true final payable price after GST, shipping, bank offers and coupons.">
+  <script>
+    if (sessionStorage.getItem("pricepilotLoggedIn") !== "true") {
+      window.location.replace("login/index.html");
+    }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="site-shell">
-    <section class="hero-section" id="login">
-      <div class="sky-gradient"></div>
-      <div class="cloud cloud-a"></div>
-      <div class="cloud cloud-b"></div>
-      <div class="cloud cloud-c"></div>
-      <div class="particle-field" aria-hidden="true">
-        <span></span><span></span><span></span><span></span><span></span><span></span>
-      </div>
-
-      <header class="top-nav">
-        <a class="brand" href="index.html" aria-label="PricePilot home">
-          <img class="brand-mark" src="images/logo.png" alt="" aria-hidden="true">
-          <span>Price<span>Pilot</span></span>
-        </a>
-        <nav class="nav-links" aria-label="Primary navigation">
-          <a href="#stores">Stores</a>
-          <a href="#dashboard">Dashboard</a>
-          <a href="#compare">Compare</a>
-        </nav>
-        <a class="nav-cta" href="#login">Sign in</a>
-      </header>
-
-      <div class="hero-grid">
-        <div class="hero-copy reveal">
-          <p class="eyebrow">AI-powered marketplace intelligence</p>
-          <h1>Find the best price before you buy.</h1>
-          <p class="hero-text">Compare top marketplaces instantly with one smart search.</p>
-        </div>
-
-        <form class="login-card reveal" action="#dashboard" id="loginForm">
-          <a class="login-logo" href="index.html" aria-label="PricePilot">
-            <img class="brand-mark" src="images/logo.png" alt="" aria-hidden="true">
-            <span>PricePilot</span>
-          </a>
-          <div class="login-title">
-            <h2>Welcome Back</h2>
-            <p>Compare prices across all major stores instantly.</p>
-          </div>
-          <label class="field">
-            <span>Email</span>
-            <input type="email" placeholder="Gmail / Email Address" autocomplete="email">
-          </label>
-          <label class="field">
-            <span>Password</span>
-            <input type="password" placeholder="Password" autocomplete="current-password">
-          </label>
-          <div class="login-meta">
-            <a href="#login">Forgot Password</a>
-          </div>
-          <button class="login-btn" type="submit">Login</button>
-          <div class="divider"><span>or continue with</span></div>
-          <div class="social-row">
-            <button type="button"><span class="google-dot"></span>Google</button>
-            <button type="button"><span class="apple-dot"></span>Apple</button>
-          </div>
-          <p class="signup-copy">New to PricePilot? <a href="#login">Create Account</a></p>
-        </form>
-      </div>
-    </section>
-
+  <main class="site-shell app-only">
     <section class="dashboard-section" id="dashboard">
+
+      <!-- ── Header ─────────────────────────────────────────────────────── -->
       <header class="app-header">
         <a class="brand dark" href="index.html">
           <img class="brand-mark" src="images/logo.png" alt="" aria-hidden="true">
@@ -80,27 +28,135 @@
         <div class="header-actions">
           <button aria-label="Notifications"><img src="images/bell.png" alt=""></button>
           <button aria-label="Profile"><img src="images/sp.png" alt=""></button>
+          <button class="logout-btn" type="button" id="logoutBtn">Logout</button>
         </div>
       </header>
 
+      <!-- ── Hero / Search ──────────────────────────────────────────────── -->
       <div class="dashboard-hero reveal">
         <p class="eyebrow">Home dashboard</p>
-        <h2>Search every major store from one intelligent command center.</h2>
+        <h1>Search every major store from one intelligent command center.</h1>
         <form class="smart-search" action="#compare" id="searchForm">
-          <input type="search" placeholder="Search any product across all stores..." aria-label="Search any product across all stores" id="searchInput">
+          <input
+            type="search"
+            placeholder="Search any product across all stores..."
+            aria-label="Search any product across all stores"
+            id="searchInput">
           <button type="button" aria-label="Voice search"><img src="images/mic.png" alt=""></button>
           <button type="button" aria-label="Image search"><img src="images/gallary.png" alt=""></button>
-          <button type="submit">Search</button>
+          <button type="submit" id="searchSubmitBtn">Search</button>
         </form>
       </div>
 
+      <!-- ── Week 4: Filter / Sort Controls ────────────────────────────── -->
+      <div class="filters-bar" id="filtersBar" role="search" aria-label="Filter and sort controls">
+
+        <div class="filter-group">
+          <label for="filterSort">Sort</label>
+          <select id="filterSort" name="sortBy">
+            <option value="lowestPrice">Lowest Price</option>
+            <option value="lowestListingPrice">Lowest Listing</option>
+            <option value="highestRating">Highest Rating</option>
+            <option value="highestDiscount">Highest Discount</option>
+            <option value="alphabetical">A → Z</option>
+            <option value="newest">Newest</option>
+            <option value="platform">Platform</option>
+          </select>
+        </div>
+
+        <div class="filter-divider" aria-hidden="true"></div>
+
+        <div class="filter-group">
+          <label for="filterPlatform">Store</label>
+          <select id="filterPlatform" name="platform">
+            <option value="">All stores</option>
+            <option value="amazon">Amazon</option>
+            <option value="flipkart">Flipkart</option>
+            <option value="nykaa">Nykaa</option>
+            <option value="apollo">Apollo</option>
+            <option value="pharmeasy">PharmEasy</option>
+            <option value="tata1mg">Tata 1mg</option>
+            <option value="myntra">Myntra</option>
+            <option value="ajio">Ajio</option>
+            <option value="reliancedigital">Reliance Digital</option>
+            <option value="croma">Croma</option>
+          </select>
+        </div>
+
+        <div class="filter-divider" aria-hidden="true"></div>
+
+        <div class="filter-group">
+          <label for="filterMinPrice">Min ₹</label>
+          <input type="number" id="filterMinPrice" name="minPrice" placeholder="0" min="0" style="width:90px">
+        </div>
+
+        <div class="filter-group">
+          <label for="filterMaxPrice">Max ₹</label>
+          <input type="number" id="filterMaxPrice" name="maxPrice" placeholder="Any" min="0" style="width:90px">
+        </div>
+
+        <div class="filter-divider" aria-hidden="true"></div>
+
+        <div class="filter-group">
+          <label for="filterBrand">Brand</label>
+          <input type="text" id="filterBrand" name="brand" placeholder="e.g. Apple" style="width:110px">
+        </div>
+
+        <div class="filter-group">
+          <label for="filterMinRating">Min ★</label>
+          <select id="filterMinRating" name="minRating">
+            <option value="">Any</option>
+            <option value="3">3+</option>
+            <option value="4">4+</option>
+            <option value="4.5">4.5+</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="filterAvailability">Stock</label>
+          <select id="filterAvailability" name="availability">
+            <option value="">All</option>
+            <option value="true">In stock</option>
+            <option value="false">Out of stock</option>
+          </select>
+        </div>
+
+        <div class="filter-divider" aria-hidden="true"></div>
+
+        <button class="btn-apply-filters" type="button" id="applyFiltersBtn">Apply</button>
+        <button class="btn-clear-filters"  type="button" id="clearFiltersBtn">Clear</button>
+      </div>
+
+      <!-- ── Week 6: Category selector chips ─────────────────────────────── -->
+      <nav class="category-bar" id="categoryBar" aria-label="Search by category">
+        <button class="category-chip active" data-category="" id="catAll">🔍 All</button>
+        <button class="category-chip" data-category="electronics">📱 Electronics</button>
+        <button class="category-chip" data-category="fashion">👗 Fashion</button>
+        <button class="category-chip" data-category="beauty">💄 Beauty</button>
+        <button class="category-chip" data-category="medicine">💊 Medicine</button>
+        <button class="category-chip" data-category="home">🏠 Home</button>
+        <button class="category-chip" data-category="groceries">🛒 Groceries</button>
+        <span class="category-label-bar" id="categoryLabelBar"></span>
+      </nav>
+
+      <!-- ── Week 5: Search Progress Panel ─────────────────────────────── -->
+      <div class="search-progress-panel" id="searchProgressPanel"
+           aria-live="polite" aria-label="Provider search progress">
+        <div class="search-progress-title">Provider progress</div>
+        <div class="progress-chips" id="progressChips"></div>
+      </div>
+
+      <!-- ── Results section ───────────────────────────────────────────── -->
       <section class="store-section reveal" id="stores">
         <div class="section-heading">
           <p class="eyebrow">Live store integration</p>
           <h2>Search once. See the real payable price everywhere.</h2>
         </div>
+
         <p class="result-status" id="resultStatus">Showing live sample results from the PricePilot backend.</p>
+
         <div class="store-carousel" aria-label="Scrollable product cards" id="productResults">
+          <!-- Placeholder cards shown before first search -->
           <article class="product-card">
             <span class="store-logo"><img src="assets/store-logos/amazon.svg" alt="Amazon logo"></span>
             <img src="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=500&q=80" alt="Smartphone">
@@ -134,56 +190,101 @@
             </div>
             <p class="final-price"><span>Final payable</span> Rs. 1,474</p>
           </article>
-          <article class="product-card">
-            <span class="store-logo"><img src="assets/store-logos/myntra.svg" alt="Myntra logo"></span>
-            <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=500&q=80" alt="Fashion outfit">
-            <h3>Premium Summer Dress</h3>
-            <div class="card-meta"><strong>Rs. 2,199</strong><span>42% off</span></div>
-            <div class="price-breakdown">
-              <span>GST included</span>
-              <span>Best offer selected: Myntra coupon + SBI card</span>
+        </div>
+
+        <!-- ── Week 5: Pagination controls ────────────────────────────── -->
+        <div class="pagination-bar" id="paginationBar" style="display:none">
+          <span class="pagination-info" id="paginationInfo"></span>
+          <div class="pagination-controls">
+            <button class="btn-page" id="prevPageBtn" type="button" disabled>← Prev</button>
+            <span class="page-indicator" id="pageIndicator">Page 1</span>
+            <button class="btn-page" id="nextPageBtn" type="button" disabled>Next →</button>
+          </div>
+        </div>
+
+        <!-- ── Provider Health Panel ───────────────────────────────────── -->
+        <div class="provider-health-section" id="providerHealthSection">
+          <div class="provider-health-toggle"
+               id="providerHealthToggle"
+               role="button"
+               tabindex="0"
+               aria-expanded="false"
+               aria-controls="providerHealthBody">
+            <div>
+              <div class="toggle-eyebrow">Live infrastructure</div>
+              <div class="toggle-title">Provider Health &amp; Browser Dashboard</div>
             </div>
-            <p class="final-price"><span>Final payable</span> Rs. 1,674</p>
-          </article>
-          <article class="product-card">
-            <span class="store-logo"><img src="assets/store-logos/croma.svg" alt="Croma logo"></span>
-            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80" alt="Headphones">
-            <h3>Wireless Noise Cancel Headphones</h3>
-            <div class="card-meta"><strong>Rs. 4,499</strong><span>31% off</span></div>
-            <div class="price-breakdown">
-              <span>GST included</span>
-              <span>Best offer selected: ICICI card + store offer</span>
+            <span class="toggle-summary" id="providerHealthSummary">Loading…</span>
+            <span class="toggle-chevron" aria-hidden="true">▼</span>
+          </div>
+          <div class="provider-health-body"
+               id="providerHealthBody"
+               role="region"
+               aria-label="Provider health details">
+
+            <div class="provider-health-loading" id="providerHealthLoading">Fetching provider status…</div>
+
+            <!-- Week 5: Playwright browser status row -->
+            <div class="browser-status-row" id="browserStatusRow" style="display:none">
+              <span class="browser-status-label">🔮 Playwright</span>
+              <span class="browser-pill" id="bpAvailable">checking…</span>
+              <span class="browser-pill" id="bpBrowsers">0 browsers</span>
+              <span class="browser-pill" id="bpPages">0 pages</span>
+              <span class="browser-pill" id="bpQueue">queue: 0</span>
+              <span class="browser-pill" id="bpUptime">uptime: —</span>
             </div>
-            <p class="final-price"><span>Final payable</span> Rs. 3,749</p>
-          </article>
+
+            <div class="provider-grid" id="providerGrid"></div>
+          </div>
         </div>
       </section>
 
+      <!-- ── Comparison table ───────────────────────────────────────────── -->
       <section class="comparison-section reveal" id="compare">
         <div class="section-heading">
           <p class="eyebrow">Final payable comparison</p>
           <h2>Best offer selected from all available offers.</h2>
         </div>
-        <div class="comparison-table" role="table" aria-label="Product price comparison" id="comparisonResults">
+        <div class="comparison-table"
+             role="table"
+             aria-label="Product price comparison"
+             id="comparisonResults">
           <div class="comparison-row table-head" role="row">
-            <span>Store</span><span>Listing Price</span><span>Best Offer Selected</span><span>Delivery</span><span>Final Payable</span><span>Buy Now</span>
+            <span>Store</span>
+            <span>Listing Price</span>
+            <span>Best Offer Selected</span>
+            <span>Delivery</span>
+            <span>Final Payable</span>
+            <span>Buy Now</span>
           </div>
           <div class="comparison-row best-deal" role="row">
-            <span class="store-cell"><span class="mini-logo"><img src="assets/store-logos/flipkart.svg" alt="Flipkart logo"></span><span>Flipkart <em>Best final price</em></span></span><strong>Rs. 1,17,999</strong><span>Coupon + bank offer chosen</span><span>Free</span><strong class="payable">Rs. 1,08,999</strong><a href="#compare">Buy Now</a>
+            <span class="store-cell">
+              <span class="mini-logo"><img src="assets/store-logos/flipkart.svg" alt="Flipkart logo"></span>
+              <span>Flipkart <em>Best final price</em></span>
+            </span>
+            <strong>Rs. 1,17,999</strong>
+            <span>Coupon + bank offer chosen</span>
+            <span>Free</span>
+            <strong class="payable">Rs. 1,08,999</strong>
+            <a href="#compare">Buy Now</a>
           </div>
           <div class="comparison-row" role="row">
-            <span class="store-cell"><span class="mini-logo"><img src="assets/store-logos/amazon.svg" alt="Amazon logo"></span><span>Amazon</span></span><strong>Rs. 1,18,900</strong><span>HDFC card + coupon chosen</span><span>Free</span><strong class="payable">Rs. 1,09,900</strong><a href="#compare">Buy Now</a>
-          </div>
-          <div class="comparison-row" role="row">
-            <span class="store-cell"><span class="mini-logo"><img src="assets/store-logos/croma.svg" alt="Croma logo"></span><span>Croma</span></span><strong>Rs. 1,19,500</strong><span>ICICI card + store offer chosen</span><span>Rs. 99</span><strong class="payable">Rs. 1,12,099</strong><a href="#compare">Buy Now</a>
-          </div>
-          <div class="comparison-row" role="row">
-            <span class="store-cell"><span class="mini-logo"><img src="assets/store-logos/myntra.svg" alt="Myntra logo"></span><span>Myntra</span></span><strong>Rs. 1,20,999</strong><span>SBI card + coupon chosen</span><span>Free</span><strong class="payable">Rs. 1,14,499</strong><a href="#compare">Buy Now</a>
+            <span class="store-cell">
+              <span class="mini-logo"><img src="assets/store-logos/amazon.svg" alt="Amazon logo"></span>
+              <span>Amazon</span>
+            </span>
+            <strong>Rs. 1,18,900</strong>
+            <span>HDFC card + coupon chosen</span>
+            <span>Free</span>
+            <strong class="payable">Rs. 1,09,900</strong>
+            <a href="#compare">Buy Now</a>
           </div>
         </div>
       </section>
+
     </section>
   </main>
+  <script src="auth.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

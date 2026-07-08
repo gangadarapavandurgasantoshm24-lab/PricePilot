@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - PricePilot</title>
+  <script>
+    if (sessionStorage.getItem("pricepilotLoggedIn") === "true") {
+      window.location.replace(new URL("../index.html", window.location.href));
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <main class="site-shell">
+    <section class="hero-section login-page" id="login">
+      <div class="sky-gradient"></div>
+      <div class="cloud cloud-a"></div>
+      <div class="cloud cloud-b"></div>
+      <div class="cloud cloud-c"></div>
+      <div class="particle-field" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+
+      <header class="top-nav">
+        <a class="brand" href="index.html" aria-label="PricePilot login">
+          <img class="brand-mark" src="../images/logo.png" alt="" aria-hidden="true">
+          <span>Price<span>Pilot</span></span>
+        </a>
+        <nav class="nav-links" aria-label="Login page highlights">
+          <a href="#login">Secure Access</a>
+          <a href="#login">AI Search</a>
+          <a href="#login">Best Deals</a>
+        </nav>
+        <a class="nav-cta" href="#login">Sign in</a>
+      </header>
+
+      <div class="hero-grid">
+        <div class="hero-copy reveal">
+          <p class="eyebrow">Secure shopping intelligence</p>
+          <h1>Login first. Compare smarter.</h1>
+          <p class="hero-text">Access your PricePilot dashboard, AI product search, price comparison, and deal alerts after successful login.</p>
+        </div>
+
+        <form class="login-card reveal" id="loginForm" novalidate>
+          <a class="login-logo" href="index.html" aria-label="PricePilot">
+            <img class="brand-mark" src="../images/logo.png" alt="" aria-hidden="true">
+            <span>PricePilot</span>
+          </a>
+          <div class="login-title">
+            <h2>Welcome Back</h2>
+            <p>Use any valid email and a password with at least 6 characters to continue.</p>
+          </div>
+
+          <div class="auth-message" id="authMessage" role="alert" aria-live="polite"></div>
+
+          <label class="field" for="email">
+            <span>Email</span>
+            <input id="email" name="email" type="email" placeholder="Enter your email address" autocomplete="email" required>
+            <small class="field-error" id="emailError"></small>
+          </label>
+
+          <label class="field" for="password">
+            <span>Password</span>
+            <input id="password" name="password" type="password" placeholder="Enter your password" autocomplete="current-password" required minlength="6">
+            <small class="field-error" id="passwordError"></small>
+          </label>
+          <p class="login-hint">Demo login accepts any valid email format. Password must contain at least 6 characters.</p>
+
+          <div class="login-meta">
+            <button class="text-link" type="button" id="forgotPassword">Forgot Password?</button>
+          </div>
+
+          <button class="login-btn" type="submit" id="loginButton">Login</button>
+
+          <div class="divider"><span>or continue with</span></div>
+          <div class="social-row">
+            <button type="button" data-provider="Google"><span class="google-dot"></span>Google</button>
+            <button type="button" data-provider="Apple"><span class="apple-dot"></span>Apple</button>
+          </div>
+          <p class="signup-copy">New to PricePilot? <button class="text-link" type="button" id="createAccount">Create Account</button></p>
+        </form>
+      </div>
+    </section>
+  </main>
+  <script src="login.js"></script>
+</body>
+</html>

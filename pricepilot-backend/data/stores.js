@@ -9,6 +9,7 @@ const stores = [
   'Tata CliQ',
   'Apollo Pharmacy',
   'PharmEasy',
+  'Tata 1mg',
   'Netmeds',
   'Amazon Pharmacy'
 ];

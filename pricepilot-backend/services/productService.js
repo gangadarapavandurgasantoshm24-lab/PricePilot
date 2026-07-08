@@ -7,6 +7,8 @@ function normalize(value) {
 
 function getSearchTerms(query) {
   return normalize(query)
+    .replace(/\bminimilist\b/g, 'minimalist')
+    .replace(/\bsun screen\b/g, 'sunscreen')
     .split(/\s+/)
     .filter(Boolean);
 }
