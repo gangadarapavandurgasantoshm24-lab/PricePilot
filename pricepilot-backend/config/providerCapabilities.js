@@ -22,8 +22,8 @@
 /** @type {Record<string, { categories: string[], strategy: string, priority: number }>} */
 const providerCapabilities = {
   amazon: {
-    categories: ['electronics', 'fashion', 'beauty', 'home', 'groceries', 'general'],
-    strategy: 'official-api',
+    categories: ['electronics', 'fashion', 'beauty', 'medicine', 'home', 'groceries', 'general'],
+    strategy: 'playwright',
     priority: 1,
     displayName: 'Amazon',
     baseUrl: 'https://www.amazon.in'
@@ -31,7 +31,7 @@ const providerCapabilities = {
 
   flipkart: {
     categories: ['electronics', 'fashion', 'home', 'general'],
-    strategy: 'mock',
+    strategy: 'playwright',
     priority: 2,
     displayName: 'Flipkart',
     baseUrl: 'https://www.flipkart.com'
@@ -47,7 +47,7 @@ const providerCapabilities = {
 
   ajio: {
     categories: ['fashion'],
-    strategy: 'mock',
+    strategy: 'playwright',
     priority: 4,
     displayName: 'Ajio',
     baseUrl: 'https://www.ajio.com'
@@ -63,7 +63,7 @@ const providerCapabilities = {
 
   nykaa: {
     categories: ['beauty'],
-    strategy: 'mock',
+    strategy: 'playwright',
     priority: 6,
     displayName: 'Nykaa',
     baseUrl: 'https://www.nykaa.com'
@@ -77,44 +77,100 @@ const providerCapabilities = {
     baseUrl: 'https://www.purplle.com'
   },
 
+  tira: {
+    categories: ['beauty'],
+    strategy: 'playwright',
+    priority: 8,
+    displayName: 'Tira Beauty',
+    baseUrl: 'https://www.tirabeauty.com'
+  },
+
   apollo: {
     categories: ['medicine'],
-    strategy: 'mock',
-    priority: 8,
+    strategy: 'playwright',
+    priority: 9,
     displayName: 'Apollo Pharmacy',
     baseUrl: 'https://www.apollopharmacy.in'
   },
 
   pharmeasy: {
     categories: ['medicine'],
-    strategy: 'mock',
-    priority: 9,
+    strategy: 'playwright',
+    priority: 10,
     displayName: 'PharmEasy',
     baseUrl: 'https://pharmeasy.in'
   },
 
   tata1mg: {
     categories: ['medicine'],
-    strategy: 'mock',
-    priority: 10,
+    strategy: 'playwright',
+    priority: 11,
     displayName: 'Tata 1mg',
     baseUrl: 'https://www.1mg.com'
   },
 
+  netmeds: {
+    categories: ['medicine'],
+    strategy: 'playwright',
+    priority: 12,
+    displayName: 'Netmeds',
+    baseUrl: 'https://www.netmeds.com'
+  },
+
+  bigbasket: {
+    categories: ['groceries'],
+    strategy: 'playwright',
+    priority: 13,
+    displayName: 'BigBasket',
+    baseUrl: 'https://www.bigbasket.com'
+  },
+
+  blinkit: {
+    categories: ['groceries'],
+    strategy: 'playwright',
+    priority: 14,
+    displayName: 'Blinkit',
+    baseUrl: 'https://blinkit.com'
+  },
+
+  zepto: {
+    categories: ['groceries'],
+    strategy: 'playwright',
+    priority: 15,
+    displayName: 'Zepto',
+    baseUrl: 'https://www.zeptonow.com'
+  },
+
+  jiomart: {
+    categories: ['groceries'],
+    strategy: 'playwright',
+    priority: 16,
+    displayName: 'JioMart',
+    baseUrl: 'https://www.jiomart.com'
+  },
+
   reliancedigital: {
     categories: ['electronics'],
-    strategy: 'mock',
-    priority: 11,
+    strategy: 'playwright',
+    priority: 17,
     displayName: 'Reliance Digital',
     baseUrl: 'https://www.reliancedigital.in'
   },
 
   croma: {
     categories: ['electronics'],
-    strategy: 'mock',
-    priority: 12,
+    strategy: 'playwright',
+    priority: 18,
     displayName: 'Croma',
     baseUrl: 'https://www.croma.com'
+  },
+
+  vijaysales: {
+    categories: ['electronics'],
+    strategy: 'playwright',
+    priority: 19,
+    displayName: 'Vijay Sales',
+    baseUrl: 'https://www.vijaysales.com'
   }
 };
 

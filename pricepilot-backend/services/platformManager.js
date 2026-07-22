@@ -22,11 +22,21 @@ const cacheService      = require('./cache.service');
 const analyticsService  = require('./analytics.service');
 const { filterProducts } = require('./filtering.service');
 const { sortProducts }  = require('./sorting.service');
-const { filterValidProducts } = require('../utils/productValidator');
-const { detectCategory, getCategoryLabel } = require('./categoryDetector');
+const { groupProducts } = require('./productGrouping.service');
+const { parseSearchIntent } = require('./searchIntent.service');
+const { applySearchRelevance } = require('./searchRelevance.service');
+const { filterValidProducts, validateProductsWithDetails } = require('../utils/productValidator');
+const { detectCategory, detectCategoryDetails, getCategoryLabel } = require('./categoryDetector');
 const { getProvidersForCategory } = require('../config/providerCapabilities');
+const { booleanEnv } = require('../config/env');
 const logger             = require('../utils/logger');
 const { SUPPORTED_PLATFORMS } = require('../config/constants');
+
+// Amazon is the true universal provider — it covers all categories.
+// Flipkart is NOT universal: it doesn't specialise in groceries/medicine/beauty.
+// Provider routing is now fully delegated to config/providerCapabilities.js.
+const UNIVERSAL_PROVIDER_NAMES = ['amazon'];
+const ENABLE_MOCK_FALLBACK = booleanEnv('ENABLE_MOCK_FALLBACK', process.env.NODE_ENV === 'test');
 
 // ─── Bootstrap: register all providers via Factory ────────────────────────────
 
@@ -115,6 +125,86 @@ function removeDuplicates(products) {
   });
 }
 
+function productKey(product) {
+  return [
+    product.productId,
+    product.productUrl,
+    product.platform,
+    product.productName
+  ].filter(Boolean).join('|');
+}
+
+function buildPipelineTrace({ providerResults, scoredProducts, groupedProducts, returnedProducts, providerDiagnostics }) {
+  const scoreByKey = new Map(scoredProducts.map((product) => [productKey(product), product]));
+  const returnedKeys = new Set(returnedProducts.map(productKey));
+  const groupByStoreKey = new Map();
+
+  groupedProducts.forEach((group) => {
+    (group.stores || []).forEach((store) => {
+      groupByStoreKey.set(productKey(store), {
+        productKey: group.productKey,
+        productName: group.productName,
+        stores: (group.stores || []).map((item) => item.platform)
+      });
+      if (store.productUrl) {
+        groupByStoreKey.set(store.productUrl, {
+          productKey: group.productKey,
+          productName: group.productName,
+          stores: (group.stores || []).map((item) => item.platform)
+        });
+      }
+    });
+  });
+
+  const diagnosticsByProvider = new Map(
+    providerDiagnostics.map((diagnostic) => [diagnostic.provider || diagnostic.platform, diagnostic])
+  );
+
+  return providerResults.map(({ name, platform, success, count, error, products }) => {
+    const providerName = name || platform;
+    const diagnostic = diagnosticsByProvider.get(providerName) || diagnosticsByProvider.get(platform) || {};
+    return {
+      provider: providerName,
+      platform,
+      success,
+      error,
+      counts: {
+        extracted: diagnostic.productsExtracted || count || 0,
+        normalized: diagnostic.productsNormalized || count || 0,
+        validated: diagnostic.productsValidated || count || 0,
+        validationRejected: diagnostic.validationRejected || 0,
+        grouped: 0,
+        returned: 0
+      },
+      products: (products || []).slice(0, 12).map((product) => {
+        const scored = scoreByKey.get(productKey(product));
+        const group = groupByStoreKey.get(productKey(product)) || groupByStoreKey.get(product.productUrl);
+        const returned = returnedKeys.has(productKey(product));
+        return {
+          productId: product.productId,
+          productName: product.productName,
+          brand: product.brand,
+          platform: product.platform,
+          productUrl: product.productUrl,
+          extracted: true,
+          normalized: true,
+          validated: true,
+          relevanceScore: scored ? scored.relevanceScore : null,
+          relevanceReasons: scored ? scored.relevanceReasons : [],
+          grouped: Boolean(group),
+          groupProductName: group ? group.productName : null,
+          groupStores: group ? group.stores : [],
+          returned
+        };
+      })
+    };
+  }).map((trace) => {
+    trace.counts.grouped = trace.products.filter((product) => product.grouped).length;
+    trace.counts.returned = trace.products.filter((product) => product.returned).length;
+    return trace;
+  });
+}
+
 // ─── Provider execution ──────────────────────────────────────────────────────
 
 /**
@@ -160,8 +250,22 @@ async function executeProvider(name, instance, config, query) {
 
     try {
       const rawProducts = await withProviderTimeout(instance, config, query);
-      const validProducts = filterValidProducts(rawProducts);
+      const validation = validateProductsWithDetails(rawProducts);
+      const validProducts = validation.validProducts;
       const executionTimeMs = Date.now() - startedAt;
+      const diagnostics = {
+        ...(instance.lastDiagnostics || {}),
+        provider: name,
+        platform: instance.platform,
+        productsExtracted: rawProducts.length,
+        productsNormalized: rawProducts.length,
+        productsValidated: validProducts.length,
+        validationRejected: validation.rejectedCount,
+        validationRejectionReasons: validation.rejectionReasons,
+        returned: validProducts.length,
+        elapsedTimeMs: executionTimeMs,
+        status: 'success'
+      };
 
       providerRegistry.recordSuccess(name, executionTimeMs);
 
@@ -179,6 +283,7 @@ async function executeProvider(name, instance, config, query) {
         count: validProducts.length,
         executionTimeMs,
         strategy: config.strategy,
+        diagnostics,
         products: validProducts
       };
     } catch (error) {
@@ -202,6 +307,53 @@ async function executeProvider(name, instance, config, query) {
   }
 
   const executionTimeMs = Date.now() - startedAt;
+
+  if (ENABLE_MOCK_FALLBACK && instance.mockFallback && typeof instance.mockFallback.searchProducts === 'function') {
+    try {
+      logger.info('Provider Falling Back To Mock', {
+        platform: instance.platform,
+        reason: lastError.message
+      });
+
+      const fallbackProducts = await instance.mockFallback.searchProducts(query);
+      const validProducts = filterValidProducts(
+        fallbackProducts.map((product) => ({
+          ...product,
+          source: 'mock-fallback'
+        }))
+      );
+
+      providerRegistry.recordSuccess(name, executionTimeMs);
+      const diagnostics = {
+        ...(instance.lastDiagnostics || {}),
+        provider: name,
+        platform: instance.platform,
+        search: query,
+        productsValidated: validProducts.length,
+        returned: validProducts.length,
+        elapsedTimeMs: executionTimeMs,
+        status: 'mock-fallback',
+        errors: [lastError.message]
+      };
+
+      return {
+        platform: instance.platform,
+        name,
+        success: true,
+        count: validProducts.length,
+        executionTimeMs,
+        strategy: 'mock-fallback',
+        diagnostics,
+        products: validProducts
+      };
+    } catch (fallbackError) {
+      logger.warn('Provider Mock Fallback Failed', {
+        platform: instance.platform,
+        message: fallbackError.message
+      });
+    }
+  }
+
   providerRegistry.recordFailure(name, lastError.message);
 
   logger.warn('Provider Skipped After Retries', {
@@ -219,6 +371,16 @@ async function executeProvider(name, instance, config, query) {
     executionTimeMs,
     strategy: config.strategy,
     error: lastError.message,
+    diagnostics: {
+      ...(instance.lastDiagnostics || {}),
+      provider: name,
+      platform: instance.platform,
+      search: query,
+      returned: 0,
+      elapsedTimeMs: executionTimeMs,
+      status: 'failed',
+      errors: [lastError.message]
+    },
     products: []
   };
 }
@@ -236,6 +398,8 @@ async function executeProvider(name, instance, config, query) {
  */
 async function searchAllPlatforms(query, options = {}) {
   const startedAt = Date.now();
+  const searchIntent = parseSearchIntent(query);
+  const providerQuery = searchIntent.correctedQuery || query;
 
   // Destructure pagination options
   const page  = Math.max(1, Number(options.page)  || 1);
@@ -244,26 +408,39 @@ async function searchAllPlatforms(query, options = {}) {
   // ── Category detection & routing ─────────────────────────────────────────
   // If the caller supplied an explicit category, use it.
   // Otherwise detect category from the query text.
-  const detectedCategory = options.category || detectCategory(query);
+  const categoryDetails = options.category
+    ? { category: String(options.category).trim().toLowerCase(), subtype: '', confidence: 1, matchedSignals: [] }
+    : {
+        category: searchIntent.category || detectCategoryDetails(providerQuery).category,
+        subtype: searchIntent.productType || '',
+        confidence: searchIntent.categoryConfidence || 0,
+        matchedSignals: []
+      };
+  const detectedCategory = categoryDetails.category || detectCategory(providerQuery);
 
   // Select providers
   const allEnabled = providerRegistry.getEnabledProviders();
 
   // Priority filter chain:
   //   1. If options.platform is set → that single platform only
-  //   2. If category resolved → providers that support that category
-  //   3. Otherwise → all enabled providers
+  //   2. If category resolved with sufficient confidence → category-specific providers
+  //      Amazon is always included as a universal provider across all categories.
+  //   3. Low confidence or 'general' → all enabled providers
   let selectedProviders;
   if (options.platform) {
     selectedProviders = allEnabled.filter(
       ({ name }) => name === normalizePlatform(options.platform)
     );
-  } else if (detectedCategory && detectedCategory !== 'general') {
-    const capableNames = getProvidersForCategory(detectedCategory);
-    selectedProviders  = allEnabled.filter(({ name }) => capableNames.includes(name));
-    // Fall back to all providers if capability matrix returns nothing registered
+  } else if (detectedCategory && detectedCategory !== 'general' && categoryDetails.confidence >= 0.35) {
+    // Category routing: use providerCapabilities.js (the single source of truth)
+    const capableNames  = getProvidersForCategory(detectedCategory);
+    // Amazon is always added as a universal provider
+    const selectedNames = new Set([...UNIVERSAL_PROVIDER_NAMES, ...capableNames]);
+    selectedProviders   = allEnabled.filter(({ name }) => selectedNames.has(name));
+    // Fall back to all providers if capability matrix yields nothing registered
     if (selectedProviders.length === 0) selectedProviders = allEnabled;
   } else {
+    // Low confidence or general: search all enabled providers
     selectedProviders = allEnabled;
   }
 
@@ -276,10 +453,13 @@ async function searchAllPlatforms(query, options = {}) {
       limit,
       totalPlatforms: 0,
       totalResults: 0,
+      totalGroups: 0,
       hasNextPage: false,
       executionTimeMs: 0,
       providerResults: [],
-      products: []
+      providerDiagnostics: [],
+      products: [],
+      groupedProducts: []
     };
   }
 
@@ -287,6 +467,8 @@ async function searchAllPlatforms(query, options = {}) {
   const providerNames = selectedProviders.map(({ name }) => name).join(',');
   const cacheKey = cacheService.getCacheKey('search', JSON.stringify({
     query,
+    providerQuery,
+    intent: searchIntent,
     platforms:    providerNames,
     category:     detectedCategory,
     sortBy:       options.sortBy       || '',
@@ -302,10 +484,33 @@ async function searchAllPlatforms(query, options = {}) {
 
   if (cachedPayload) {
     const executionTimeMs = Date.now() - startedAt;
-    const filtered = filterProducts(cachedPayload.products, options);
+    const relevance = applySearchRelevance(cachedPayload.products, searchIntent);
+    const filtered = filterProducts(relevance.mainProducts, options);
     const sorted   = sortProducts(filtered, options.sortBy);
     const startIdx = (page - 1) * limit;
-    const products = sorted.slice(startIdx, startIdx + limit);
+    const allGroupedProducts = groupProducts(sorted);
+    const groupedProducts = allGroupedProducts.slice(startIdx, startIdx + limit);
+    const groupedStoreUrls = new Set(
+      groupedProducts.flatMap((group) =>
+        (group.stores || []).map((store) => store.productUrl).filter(Boolean)
+      )
+    );
+    const products = sorted.filter((product) =>
+      groupedStoreUrls.has(product.productUrl)
+    ).slice(0, limit * Math.max(1, groupedProducts.length || 1));
+    const relatedProducts = relevance.relatedProducts.slice(0, limit);
+    const groupedRelatedProducts = groupProducts(relatedProducts);
+    const cachedProviderResultsWithProducts = (cachedPayload.providerResults || []).map((result) => ({
+      ...result,
+      products: cachedPayload.products.filter((product) => product.platform === result.platform || product.platform === result.name)
+    }));
+    const pipelineTrace = buildPipelineTrace({
+      providerResults: cachedProviderResultsWithProducts,
+      scoredProducts: relevance.scoredProducts,
+      groupedProducts: allGroupedProducts,
+      returnedProducts: products,
+      providerDiagnostics: cachedPayload.providerDiagnostics || []
+    });
 
     analyticsService.recordSearch({
       query,
@@ -324,23 +529,32 @@ async function searchAllPlatforms(query, options = {}) {
       cached: true,
       detectedCategory,
       categoryLabel: getCategoryLabel(detectedCategory),
+      categoryDetails,
+      searchIntent,
+      correctedQuery: searchIntent.corrected ? providerQuery : undefined,
       page,
       limit,
       totalPlatforms: selectedProviders.length,
       totalResults: sorted.length,
-      hasNextPage: startIdx + limit < sorted.length,
+      totalGroups: allGroupedProducts.length,
+      hasNextPage: startIdx + limit < allGroupedProducts.length,
       executionTimeMs,
       providerResults: cachedPayload.providerResults,
-      products
+      providerDiagnostics: cachedPayload.providerDiagnostics || [],
+      pipelineTrace,
+      products,
+      groupedProducts,
+      relatedProducts,
+      groupedRelatedProducts
     };
   }
 
-  logger.info('Search Started', { query, providers: providerNames });
+  logger.info('Search Started', { query, providerQuery, providers: providerNames, intent: searchIntent });
 
   // Execute all providers concurrently – failures isolated by Promise.allSettled
   const settled = await Promise.allSettled(
     selectedProviders.map(({ name, instance, config }) =>
-      executeProvider(name, instance, config, query)
+      executeProvider(name, instance, config, providerQuery)
     )
   );
 
@@ -375,18 +589,30 @@ async function searchAllPlatforms(query, options = {}) {
       strategy,
       error
     })),
+    providerDiagnostics: providerResults.map(({ diagnostics }) => diagnostics).filter(Boolean),
     products: consolidatedProducts
   });
 
-  const filtered  = filterProducts(consolidatedProducts, options);
+  const relevance = applySearchRelevance(consolidatedProducts, searchIntent);
+  const filtered  = filterProducts(relevance.mainProducts, options);
   const sorted    = sortProducts(filtered, options.sortBy);
+  const allGroupedProducts = groupProducts(sorted);
   const startIdx  = (page - 1) * limit;
-  const products  = sorted.slice(startIdx, startIdx + limit);
+  const groupedProducts = allGroupedProducts.slice(startIdx, startIdx + limit);
+  const groupedStoreUrls = new Set(
+    groupedProducts.flatMap((group) =>
+      (group.stores || []).map((store) => store.productUrl).filter(Boolean)
+    )
+  );
+  const products  = sorted.filter((product) => groupedStoreUrls.has(product.productUrl));
+  const relatedProducts = relevance.relatedProducts.slice(0, limit);
+  const groupedRelatedProducts = groupProducts(relatedProducts);
   const executionTimeMs = Date.now() - startedAt;
 
   logger.info('Search Finished', {
     query,
     totalProducts: sorted.length,
+    totalGroups: allGroupedProducts.length,
     page,
     limit,
     executionTimeMs
@@ -403,6 +629,14 @@ async function searchAllPlatforms(query, options = {}) {
       error
     })
   );
+  const providerDiagnostics = providerResults.map(({ diagnostics }) => diagnostics).filter(Boolean);
+  const pipelineTrace = buildPipelineTrace({
+    providerResults,
+    scoredProducts: relevance.scoredProducts,
+    groupedProducts: allGroupedProducts,
+    returnedProducts: products,
+    providerDiagnostics
+  });
 
   analyticsService.recordSearch({
     query,
@@ -419,14 +653,24 @@ async function searchAllPlatforms(query, options = {}) {
     cached: false,
     detectedCategory,
     categoryLabel: getCategoryLabel(detectedCategory),
+    categoryDetails,
+    searchIntent,
+    searchMode: searchIntent.searchMode || 'generic',
+    correctedQuery: searchIntent.corrected ? providerQuery : undefined,
     page,
     limit,
     totalPlatforms: selectedProviders.length,
     totalResults: sorted.length,
-    hasNextPage: startIdx + limit < sorted.length,
+    totalGroups: allGroupedProducts.length,
+    hasNextPage: startIdx + limit < allGroupedProducts.length,
     executionTimeMs,
     providerResults: summaryResults,
-    products
+    providerDiagnostics,
+    pipelineTrace,
+    products,
+    groupedProducts,
+    relatedProducts,
+    groupedRelatedProducts
   };
 }
 

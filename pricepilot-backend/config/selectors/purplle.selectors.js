@@ -2,8 +2,12 @@
  * @module purplle.selectors
  * @description DOM selectors for Purplle search results page.
  *
- * Selectors are NEVER hardcoded inside provider files.
- * All Playwright providers import from config/selectors/.
+ * Phase 2 upgrades:
+ *  - Multiple fallback selectors
+ *  - Added offer/cashback/coupon selectors
+ *  - Added brand extraction
+ *
+ * Last verified: Purplle search results layout (July 2026)
  */
 
 module.exports = {
@@ -11,39 +15,48 @@ module.exports = {
   searchUrl: (query) =>
     `https://www.purplle.com/search?q=${encodeURIComponent(query)}`,
 
-  /** Container for each search result card */
-  resultItem: '.product-card, [class*="ProductCard"], [class*="product-card"]',
+  /** Base URL */
+  baseUrl: 'https://www.purplle.com',
 
-  /** Product brand */
-  brand: '[class*="brand-name"], [class*="brandName"]',
+  /** Container for each search result card */
+  resultItem: '[class*="productCard"], [class*="product-card"], [class*="ProductCard"], .plp-card',
+
+  /** Brand name */
+  brand: '[class*="brand"], [class*="Brand"], .brand-name',
 
   /** Product title */
-  title: '[class*="product-name"], [class*="productName"], .product-name',
+  title: '[class*="product-name"], [class*="ProductName"], [class*="product-title"], h3',
 
-  /** Current / discounted price */
-  price: '[class*="product-price"] [class*="offer"], [class*="offerPrice"], .selling-price',
+  /** Discounted / offer price */
+  price: '[class*="offer-price"], [class*="discounted-price"], [class*="special-price"], [class*="sale-price"]',
 
-  /** MRP / original price */
-  originalPrice: '[class*="mrp"], [class*="strikethrough"], .mrp-price',
+  /** Original MRP */
+  originalPrice: '[class*="mrp"], [class*="MRP"], [class*="regular-price"], [class*="strike"]',
 
-  /** Discount text */
-  discount: '[class*="discount"], [class*="off-text"]',
+  /** Discount */
+  discount: '[class*="discount"], [class*="off"], [class*="savings"]',
 
   /** Rating */
-  rating: '[class*="rating-value"], [class*="ratingValue"]',
+  rating: '[class*="rating"], [aria-label*="rating"], [class*="star"]',
 
   /** Review count */
-  reviewCount: '[class*="rating-count"], [class*="reviewCount"]',
+  reviewCount: '[class*="review"], [class*="ratingCount"]',
+
+  /** Cashback / offer / coupon */
+  offer: '[class*="cashback"], [class*="offer"], [class*="coupon"], [class*="Cashback"]',
 
   /** Product image */
-  image: '[class*="product-img"] img, [class*="ProductImage"] img',
+  image: 'img[src*="purplle"], img[loading="lazy"], img.product-image',
 
-  /** Link to product detail page */
-  link: 'a[href*="/product/"]',
+  /** Link to product detail */
+  link: 'a[href*="/p/"], a[href*="purplle"], [class*="productCard"] a',
 
-  /** Out of stock badge */
-  outOfStock: '[class*="out-of-stock"], [class*="outOfStock"]',
+  /** Out of stock */
+  outOfStock: '[class*="out-of-stock"], [class*="OutOfStock"]',
 
   /** Selector to wait for before extracting */
-  waitFor: '[class*="ProductCard"], .product-card, .product-listing'
+  waitFor: '[class*="productCard"], [class*="product-list"], .plp-card',
+
+  /** No results */
+  noResults: '[class*="no-result"], [class*="emptyState"]',
 };

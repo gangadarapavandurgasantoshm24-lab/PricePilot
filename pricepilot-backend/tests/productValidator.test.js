@@ -3,7 +3,7 @@
  * @file tests/productValidator.test.js
  */
 
-const { validateProduct, filterValidProducts } = require('../utils/productValidator');
+const { validateProduct, filterValidProducts, validateProductsWithDetails } = require('../utils/productValidator');
 
 const validProduct = {
   productId: 'p1',
@@ -27,16 +27,16 @@ describe('validateProduct', () => {
     expect(errors).toContain('Missing title');
   });
 
-  it('rejects a product with missing image', () => {
+  it('allows a product with missing image', () => {
     const { valid, errors } = validateProduct({ ...validProduct, image: '' });
-    expect(valid).toBe(false);
-    expect(errors).toContain('Missing image');
+    expect(valid).toBe(true);
+    expect(errors).toHaveLength(0);
   });
 
   it('rejects a product with an invalid image URL', () => {
     const { valid, errors } = validateProduct({ ...validProduct, image: 'not-a-url' });
     expect(valid).toBe(false);
-    expect(errors).toContain('Missing image');
+    expect(errors).toContain('Invalid image URL');
   });
 
   it('rejects a product with missing URL', () => {
@@ -96,5 +96,23 @@ describe('filterValidProducts', () => {
     ];
     const result = filterValidProducts(products);
     expect(result).toHaveLength(1);
+  });
+});
+
+describe('validateProductsWithDetails', () => {
+  it('returns valid products plus diagnostic rejection counts', () => {
+    const result = validateProductsWithDetails([
+      { ...validProduct, productId: 'valid-1' },
+      { ...validProduct, productId: 'missing-title', productName: '' },
+      { ...validProduct, productId: 'bad-price', currentPrice: 0 },
+      { ...validProduct, productId: 'valid-2' }
+    ]);
+
+    expect(result.validProducts).toHaveLength(2);
+    expect(result.rejectedCount).toBe(2);
+    expect(result.rejectionReasons).toEqual({
+      'Missing title': 1,
+      'Invalid price': 1
+    });
   });
 });

@@ -7,6 +7,12 @@
  */
 
 const request = require('supertest');
+
+jest.mock('../services/browserQueue', () => ({
+  acquire: jest.fn().mockRejectedValue(new Error('Playwright not available in Category Search test')),
+  getMetrics: jest.fn(() => ({ queueLength: 0, activePages: 0, maxPages: 5 }))
+}));
+
 const app     = require('../app');
 
 describe('GET /api/search – Category Detection in Response', () => {

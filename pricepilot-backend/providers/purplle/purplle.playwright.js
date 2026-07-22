@@ -40,7 +40,7 @@ class PurpllePlaywrightProvider extends PlaywrightProvider {
     const items = await page.$$(sel.resultItem);
     const products = [];
 
-    for (const item of items.slice(0, 15)) {
+    for (const item of items.slice(0, 30)) {
       try {
         const brand      = await item.$eval(sel.brand,         el => el.textContent.trim()).catch(() => '');
         const name       = await item.$eval(sel.title,         el => el.textContent.trim()).catch(() => '');

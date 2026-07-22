@@ -2,8 +2,12 @@
  * @module meesho.selectors
  * @description DOM selectors for Meesho search results page.
  *
- * Selectors are NEVER hardcoded inside provider files.
- * All Playwright providers import from config/selectors/.
+ * Phase 2 upgrades:
+ *  - Multiple fallback selectors for obfuscated classes
+ *  - Added offer/coupon/cashback selectors
+ *  - Added delivery and out-of-stock detection
+ *
+ * Last verified: Meesho search results layout (July 2026)
  */
 
 module.exports = {
@@ -11,39 +15,45 @@ module.exports = {
   searchUrl: (query) =>
     `https://www.meesho.com/search?q=${encodeURIComponent(query)}`,
 
+  /** Base URL */
+  baseUrl: 'https://www.meesho.com',
+
   /** Container for each search result card */
-  resultItem: '[class*="ProductList"] [class*="Card"], [data-testid="product-container"]',
+  resultItem: '[class*="ProductCard"], [class*="product-card"], [class*="NewProductCard"], div[style*="position"]:has(a[href*="/p/"])',
 
-  /** Product title */
-  title: '[class*="ProductTitle"], [class*="product-title"], h5',
+  /** Product name */
+  title: '[class*="ProductCard__Title"], [class*="product-title"], [class*="title"], h2, h3',
 
-  /** Supplier / brand name */
-  brand: '[class*="Supplier"], [class*="supplier-name"], [class*="brandName"]',
-
-  /** Discounted price */
-  price: '[class*="PriceContainer"] h5, [class*="discounted-price"]',
+  /** Price */
+  price: '[class*="ProductCard__Price"], [class*="price"], [class*="PriceContainer"] h5',
 
   /** Original price */
-  originalPrice: '[class*="OriginalPrice"], [class*="original-price"]',
+  originalPrice: '[class*="ProductCard__OriginalPrice"], [class*="strike"], [class*="mrp"]',
 
-  /** Discount percentage */
-  discount: '[class*="Discount"], [class*="discount-label"]',
+  /** Discount */
+  discount: '[class*="ProductCard__Discount"], [class*="discount"], [class*="off"]',
 
   /** Rating */
-  rating: '[class*="RatingBadge"] p, [class*="rating"]',
+  rating: '[class*="Rating"], [class*="rating"], [aria-label*="rating"]',
 
   /** Review count */
-  reviewCount: '[class*="RatingCount"], [class*="review-count"]',
+  reviewCount: '[class*="review"], [class*="ratingCount"]',
+
+  /** Offer / free delivery / coupon */
+  offer: '[class*="offer"], [class*="coupon"], [class*="free-shipping"], [class*="FreeDelivery"]',
 
   /** Product image */
-  image: '[class*="ProductImage"] img, [class*="product-image"] img',
+  image: 'img[class*="ProductCard"], img[src*="meesho"], img[loading="lazy"]',
 
   /** Link to product detail page */
-  link: 'a[href*="/product/"]',
+  link: 'a[href*="/p/"], a.product-link, [class*="ProductCard"] a',
 
-  /** Out of stock indicator */
-  outOfStock: '[class*="OutOfStock"]',
+  /** Out of stock */
+  outOfStock: '[class*="out-of-stock"], [class*="OutOfStock"], [class*="unavailable"]',
 
   /** Selector to wait for before extracting */
-  waitFor: '[class*="ProductList"], [data-testid="product-container"]'
+  waitFor: '[class*="ProductCard"], [class*="product-list"], [class*="NewProductCard"]',
+
+  /** No results */
+  noResults: '[class*="no-result"], [class*="emptyState"], [class*="NoResult"]',
 };

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 64" role="img" aria-label="Purplle">
+  <rect width="180" height="64" rx="12" fill="#ffffff"/>
+  <text x="18" y="42" fill="#6d1f7a" font-family="Inter, Arial, sans-serif" font-size="33" font-weight="900">purplle</text>
+  <circle cx="151" cy="22" r="6" fill="#f15bb5"/>
+</svg>

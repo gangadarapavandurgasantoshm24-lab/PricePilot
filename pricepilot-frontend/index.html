@@ -76,10 +76,15 @@
             <option value="apollo">Apollo</option>
             <option value="pharmeasy">PharmEasy</option>
             <option value="tata1mg">Tata 1mg</option>
+            <option value="netmeds">Netmeds</option>
             <option value="myntra">Myntra</option>
             <option value="ajio">Ajio</option>
+            <option value="meesho">Meesho</option>
+            <option value="purplle">Purplle</option>
+            <option value="tira">Tira</option>
             <option value="reliancedigital">Reliance Digital</option>
             <option value="croma">Croma</option>
+            <option value="vijaysales">Vijay Sales</option>
           </select>
         </div>
 
@@ -153,44 +158,18 @@
           <h2>Search once. See the real payable price everywhere.</h2>
         </div>
 
-        <p class="result-status" id="resultStatus">Showing live sample results from the PricePilot backend.</p>
+        <p class="result-status" id="resultStatus">Ready for live search.</p>
 
         <div class="store-carousel" aria-label="Scrollable product cards" id="productResults">
-          <!-- Placeholder cards shown before first search -->
-          <article class="product-card">
-            <span class="store-logo"><img src="assets/store-logos/amazon.svg" alt="Amazon logo"></span>
-            <img src="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=500&q=80" alt="Smartphone">
-            <h3>iPhone 16 Pro 128GB</h3>
-            <div class="card-meta"><strong>Rs. 1,18,900</strong><span>12% off</span></div>
-            <div class="price-breakdown">
-              <span>GST included</span>
-              <span>Best offer selected: HDFC card + coupon</span>
-            </div>
-            <p class="final-price"><span>Final payable</span> Rs. 1,09,900</p>
-          </article>
-          <article class="product-card">
-            <span class="store-logo"><img src="assets/store-logos/flipkart.svg" alt="Flipkart logo"></span>
-            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=500&q=80" alt="Sneakers">
-            <h3>Nike Air Zoom Pegasus</h3>
-            <div class="card-meta"><strong>Rs. 7,299</strong><span>28% off</span></div>
-            <div class="price-breakdown">
-              <span>GST included</span>
-              <span>Best offer selected: Axis card + SuperCoins</span>
-            </div>
-            <p class="final-price"><span>Final payable</span> Rs. 6,549</p>
-          </article>
-          <article class="product-card">
-            <span class="store-logo"><img src="assets/store-logos/nykaa.svg" alt="Nykaa logo"></span>
-            <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=500&q=80" alt="Cosmetics kit">
-            <h3>Glow Essentials Beauty Kit</h3>
-            <div class="card-meta"><strong>Rs. 1,749</strong><span>34% off</span></div>
-            <div class="price-breakdown">
-              <span>GST included</span>
-              <span>Best offer selected: Beauty coupon + UPI cashback</span>
-            </div>
-            <p class="final-price"><span>Final payable</span> Rs. 1,474</p>
-          </article>
         </div>
+
+        <section class="related-products-section" id="relatedProductsSection" hidden>
+          <div class="section-heading compact">
+            <p class="eyebrow">Related products</p>
+            <h2>Similar matches kept separate from the main comparison.</h2>
+          </div>
+          <div class="related-products-grid" id="relatedProducts"></div>
+        </section>
 
         <!-- ── Week 5: Pagination controls ────────────────────────────── -->
         <div class="pagination-bar" id="paginationBar" style="display:none">
@@ -256,28 +235,6 @@
             <span>Delivery</span>
             <span>Final Payable</span>
             <span>Buy Now</span>
-          </div>
-          <div class="comparison-row best-deal" role="row">
-            <span class="store-cell">
-              <span class="mini-logo"><img src="assets/store-logos/flipkart.svg" alt="Flipkart logo"></span>
-              <span>Flipkart <em>Best final price</em></span>
-            </span>
-            <strong>Rs. 1,17,999</strong>
-            <span>Coupon + bank offer chosen</span>
-            <span>Free</span>
-            <strong class="payable">Rs. 1,08,999</strong>
-            <a href="#compare">Buy Now</a>
-          </div>
-          <div class="comparison-row" role="row">
-            <span class="store-cell">
-              <span class="mini-logo"><img src="assets/store-logos/amazon.svg" alt="Amazon logo"></span>
-              <span>Amazon</span>
-            </span>
-            <strong>Rs. 1,18,900</strong>
-            <span>HDFC card + coupon chosen</span>
-            <span>Free</span>
-            <strong class="payable">Rs. 1,09,900</strong>
-            <a href="#compare">Buy Now</a>
           </div>
         </div>
       </section>

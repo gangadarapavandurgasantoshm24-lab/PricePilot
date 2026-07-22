@@ -34,10 +34,17 @@ const MOCK_PATHS = {
   apollo:          '../providers/apollo/apollo.provider',
   pharmeasy:       '../providers/pharmeasy/pharmeasy.provider',
   tata1mg:         '../providers/tata1mg/tata1mg.provider',
+  netmeds:         '../providers/netmeds/netmeds.provider',
+  bigbasket:       '../providers/bigbasket/bigbasket.provider',
+  blinkit:         '../providers/blinkit/blinkit.provider',
+  zepto:           '../providers/zepto/zepto.provider',
+  jiomart:         '../providers/jiomart/jiomart.provider',
   myntra:          '../providers/myntra/myntra.provider',
   ajio:            '../providers/ajio/ajio.provider',
   reliancedigital: '../providers/reliancedigital/reliancedigital.provider',
   croma:           '../providers/croma/croma.provider',
+  vijaysales:      '../providers/vijaysales/vijaysales.provider',
+  tira:            '../providers/tira/tira.provider',
   purplle:         '../providers/purplle/purplle.provider',   // Week 6
   meesho:          '../providers/meesho/meesho.provider'      // Week 6
 };
@@ -58,9 +65,25 @@ const OFFICIAL_API_PATHS = {
  * @type {Record<string, string>}
  */
 const PLAYWRIGHT_PATHS = {
-  myntra:  '../providers/myntra/myntra.playwright',   // Week 6
-  purplle: '../providers/purplle/purplle.playwright', // Week 6
-  meesho:  '../providers/meesho/meesho.playwright'    // Week 6
+  amazon:          '../providers/amazon/amazon.playwright',
+  flipkart:        '../providers/flipkart/flipkart.playwright',
+  croma:           '../providers/croma/croma.playwright',
+  reliancedigital: '../providers/reliancedigital/reliancedigital.playwright',
+  vijaysales:      '../providers/vijaysales/vijaysales.playwright',
+  myntra:          '../providers/myntra/myntra.playwright',
+  ajio:            '../providers/ajio/ajio.playwright',
+  meesho:          '../providers/meesho/meesho.playwright',
+  nykaa:           '../providers/nykaa/nykaa.playwright',
+  purplle:         '../providers/purplle/purplle.playwright',
+  tira:            '../providers/tira/tira.playwright',
+  apollo:          '../providers/apollo/apollo.playwright',
+  pharmeasy:       '../providers/pharmeasy/pharmeasy.playwright',
+  tata1mg:         '../providers/tata1mg/tata1mg.playwright',
+  netmeds:         '../providers/netmeds/netmeds.playwright',
+  bigbasket:       '../providers/bigbasket/bigbasket.playwright',
+  blinkit:         '../providers/blinkit/blinkit.playwright',
+  zepto:           '../providers/zepto/zepto.playwright',
+  jiomart:         '../providers/jiomart/jiomart.playwright'
 };
 
 // ─── Strategy dispatch ────────────────────────────────────────────────────────

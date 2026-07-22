@@ -12,8 +12,6 @@ function isValidProduct(product) {
     product &&
     product.productName &&
     Number(product.currentPrice) > 0 &&
-    product.image &&
-    isValidUrl(product.image) &&
     product.productUrl &&
     isValidUrl(product.productUrl)
   );

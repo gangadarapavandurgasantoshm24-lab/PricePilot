@@ -1,4 +1,5 @@
 const platformManager = require('../services/platformManager');
+const { getSearchSuggestions, parseSearchIntent } = require('../services/searchIntent.service');
 const { numberEnv } = require('../config/env');
 
 const DEFAULT_PAGE  = numberEnv('DEFAULT_PAGE',  1);
@@ -77,8 +78,19 @@ function getSupportedPlatforms(req, res) {
   });
 }
 
+function getSuggestions(req, res) {
+  const query = String(req.query.q || '').trim();
+  return res.json({
+    success: true,
+    query,
+    intent: query ? parseSearchIntent(query) : null,
+    suggestions: getSearchSuggestions(query)
+  });
+}
+
 module.exports = {
   searchProducts,
   searchPlatform,
-  getSupportedPlatforms
+  getSupportedPlatforms,
+  getSuggestions
 };

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Detail - PricePilot</title>
+  <script>
+    if (sessionStorage.getItem("pricepilotLoggedIn") !== "true") {
+      window.location.replace("../login/index.html");
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <main class="site-shell app-only">
+    <section class="dashboard-section product-detail-page">
+      <header class="app-header">
+        <a class="brand dark" href="../index.html">
+          <img class="brand-mark" src="../images/logo.png" alt="" aria-hidden="true">
+          <span>Price<span>Pilot</span></span>
+        </a>
+        <div class="header-actions">
+          <a class="detail-back-link" href="../index.html">Back</a>
+          <button class="logout-btn" type="button" id="logoutBtn">Logout</button>
+        </div>
+      </header>
+
+      <section class="product-detail-shell" id="productDetailShell" aria-live="polite">
+        <div class="loading-state">
+          <div class="loading-spinner" aria-label="Loading"></div>
+          <p>Loading product comparison...</p>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="product.js"></script>
+</body>
+</html>

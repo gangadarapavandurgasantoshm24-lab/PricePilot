@@ -14,10 +14,19 @@ const SUPPORTED_PLATFORMS = [
   'apollo',
   'pharmeasy',
   'tata1mg',
+  'netmeds',
+  'bigbasket',
+  'blinkit',
+  'zepto',
+  'jiomart',
   'myntra',
   'ajio',
+  'meesho',
+  'purplle',
+  'tira',
   'reliancedigital',
-  'croma'
+  'croma',
+  'vijaysales'
 ];
 
 module.exports = {
